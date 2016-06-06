@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">GifAnimator</string>
+    <string name="take_picture">Picture</string>
+    <string name="start_record">Start</string>
+</resources>
