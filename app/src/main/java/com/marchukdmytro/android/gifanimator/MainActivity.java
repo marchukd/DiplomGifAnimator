@@ -1,5 +1,8 @@
 package com.marchukdmytro.android.gifanimator;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -7,12 +10,16 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
@@ -20,6 +27,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements Camera.PreviewCallback {
@@ -30,6 +38,12 @@ public class MainActivity extends AppCompatActivity implements Camera.PreviewCal
     private File fileToSave;
     private ArrayList<String> paths = new ArrayList<>();
     private ArrayList<Bitmap> bitmaps = new ArrayList<>();
+    private ProgressDialog dialog;
+    private String destinationPath;
+    private TextView tvTookPhotos;
+    private Button btSwitch;
+    private SurfaceHolder holder;
+    private int currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements Camera.PreviewCal
         setContentView(R.layout.activity_main);
 
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
-
+        tvTookPhotos = (TextView) findViewById(R.id.tvTookPhotos);
         findViewById(R.id.btnStartRecord).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -50,8 +64,31 @@ public class MainActivity extends AppCompatActivity implements Camera.PreviewCal
                 camera.setPreviewCallback(MainActivity.this);
             }
         });
+        btSwitch = (Button) findViewById(R.id.btSwitch);
+        btSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                camera.release();
+                if (currentCameraId == Camera.CameraInfo.CAMERA_FACING_BACK) {
+                    currentCameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
+                } else {
+                    currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+                }
+                camera = Camera.open(currentCameraId);
+
+                setCameraDisplayOrientation(MainActivity.this, currentCameraId, camera);
+                try {
+
+                    camera.setPreviewDisplay(holder);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                camera.startPreview();
+            }
+        });
+
         assert surfaceView != null;
-        SurfaceHolder holder = surfaceView.getHolder();
+        holder = surfaceView.getHolder();
         holder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
@@ -74,10 +111,44 @@ public class MainActivity extends AppCompatActivity implements Camera.PreviewCal
         });
     }
 
+    public static void setCameraDisplayOrientation(Activity activity,
+                                                   int cameraId, android.hardware.Camera camera) {
+        android.hardware.Camera.CameraInfo info =
+                new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+        int rotation = activity.getWindowManager().getDefaultDisplay()
+                .getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;  // compensate the mirror
+
+        } else {  // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        camera.setDisplayOrientation(result);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        camera = Camera.open();
+        camera = Camera.open(currentCameraId);
         camera.setDisplayOrientation(90);
     }
 
@@ -92,12 +163,13 @@ public class MainActivity extends AppCompatActivity implements Camera.PreviewCal
     @Override
     public void onPreviewFrame(byte[] data, Camera camera) {
         try {
-            if (i >= 5) {
+            if (i >= 15) {
                 camera.setPreviewCallback(null);
-                encodeGIF();
+                //encodeGIF();
+                new GifCreatorTask().execute();
                 return;
             }
-
+            tvTookPhotos.setText(String.valueOf(i + 1));
             Camera.Size previewSize = camera.getParameters().getPreviewSize();
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             byte[] rawImage = null;
@@ -123,6 +195,14 @@ public class MainActivity extends AppCompatActivity implements Camera.PreviewCal
 
             rawImage = rotatedStream.toByteArray();
 
+            if(currentCameraId == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                Bitmap bmp;
+                bmp = BitmapFactory.decodeByteArray(rawImage, 0, rawImage.length);
+                bmp = rotate(bmp, 180);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+                rawImage = stream.toByteArray();
+            }
             // Do something we this byte array
 
             File file = new File(fileToSave + "/" + i + "out.jpg");
@@ -136,27 +216,14 @@ public class MainActivity extends AppCompatActivity implements Camera.PreviewCal
         }
     }
 
-    private byte[] rotateYUV420Degree90(byte[] data, int imageWidth, int imageHeight) {
-        byte[] yuv = new byte[imageWidth * imageHeight * 3 / 2];
-        // Rotate the Y luma
-        int i = 0;
-        for (int x = 0; x < imageWidth; x++) {
-            for (int y = imageHeight - 1; y >= 0; y--) {
-                yuv[i] = data[y * imageWidth + x];
-                i++;
-            }
-        }
-        // Rotate the U and V color components
-        i = imageWidth * imageHeight * 3 / 2 - 1;
-        for (int x = imageWidth - 1; x > 0; x = x - 2) {
-            for (int y = 0; y < imageHeight / 2; y++) {
-                yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth) + x];
-                i--;
-                yuv[i] = data[(imageWidth * imageHeight) + (y * imageWidth) + (x - 1)];
-                i--;
-            }
-        }
-        return yuv;
+    public static Bitmap rotate(Bitmap bitmap, int degree) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+
+        Matrix mtx = new Matrix();
+        mtx.preScale(-1, 1);
+        mtx.postRotate(degree);
+        return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
     }
 
     private void encodeGIF() throws Exception {
@@ -164,8 +231,6 @@ public class MainActivity extends AppCompatActivity implements Camera.PreviewCal
             Bitmap bmp = BitmapFactory.decodeFile(path);
             bitmaps.add(bmp);
         }
-        String destinationPath = Environment.getExternalStorageDirectory().getPath()
-                + "/" + "2.gif";
         FileOutputStream fos = new FileOutputStream(destinationPath);
         GifEncoder encoder = new GifEncoder();
         encoder.start(fos);
@@ -174,5 +239,34 @@ public class MainActivity extends AppCompatActivity implements Camera.PreviewCal
         }
         encoder.finish();
         startActivity(GifPreviewActivity.newInstance(this, destinationPath));
+    }
+
+    public class GifCreatorTask extends AsyncTask<Context, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            destinationPath = Environment.getExternalStorageDirectory().getPath()
+                    + "/" + "2.gif";
+            dialog = ProgressDialog.show(MainActivity.this, "loading",
+                    "loading", true, false);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            dialog.dismiss();
+            startActivity(GifPreviewActivity.newInstance(MainActivity.this, destinationPath));
+        }
+
+        @Override
+        protected Void doInBackground(Context... params) {
+            try {
+                //encodeGIF();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 }

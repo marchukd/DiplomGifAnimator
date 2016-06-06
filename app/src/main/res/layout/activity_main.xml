@@ -11,17 +11,29 @@
         android:layout_height="match_parent" />
 
     <LinearLayout
-        android:layout_gravity="bottom|center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:background="#aeeaae"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center">
+
+        <TextView
+            android:id="@+id/tvTookPhotos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/btnStartRecord"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
+            android:layout_gravity="center"
             android:onClick="onClickStartRecord"
-            android:text="@string/start_record"/>
+            android:text="@string/start_record" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Switch"
+            android:id="@+id/btSwitch" />
     </LinearLayout>
 
 </FrameLayout>
