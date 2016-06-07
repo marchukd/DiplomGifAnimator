@@ -5,7 +5,15 @@
     android:orientation="vertical">
 
     <ImageView
+        android:layout_weight="1"
         android:id="@+id/gifView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <RelativeLayout
+        android:layout_weight="1"
+        android:background="#aeaeae"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+    </RelativeLayout>
 </LinearLayout>
