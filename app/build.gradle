@@ -26,4 +26,5 @@ dependencies {
     compile files('libs/jai_imageio.jar')
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.16'
     compile 'commons-io:commons-io:2.5'
+    compile 'com.nononsenseapps:filepicker:2.5.0'
 }
