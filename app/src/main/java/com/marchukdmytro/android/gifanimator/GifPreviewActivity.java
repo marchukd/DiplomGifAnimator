@@ -1,6 +1,7 @@
 package com.marchukdmytro.android.gifanimator;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -20,24 +22,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.marchukdmytro.android.gifanimator.filepicker.EnterStringDialog;
 import com.marchukdmytro.android.gifanimator.filepicker.FileExplorerHelper;
 import com.marchukdmytro.android.gifanimator.filepicker.FilePickerCallback;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Dmytro on 06.06.2016.
  */
-public class GifPreviewActivity extends AppCompatActivity {
+public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener {
 
     private static String TAG = "gif-preview-activity-tag";
     private final int requestCode = 5;
@@ -49,7 +49,11 @@ public class GifPreviewActivity extends AppCompatActivity {
     private ColorMatrix cm = new ColorMatrix();
     private String framesPath;
     private ImageView imageView;
-    private final List<Bitmap> bitmaps = new ArrayList<Bitmap>();
+    private SeekBar seekBr;
+    private SeekBar seekCo;
+    private LinearLayout containerView;
+    private View menu;
+    private View panelArrow;
 
     public static Intent newInstance(Context context, String framesPath) {
         Intent intent = new Intent(context, GifPreviewActivity.class);
@@ -67,34 +71,92 @@ public class GifPreviewActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.gifView);
         loadGif();
 
-        findViewById(R.id.btGray).setOnClickListener(new View.OnClickListener() {
+        panelArrow = findViewById(R.id.panelArrow);
+        panelArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContrastBrightness(cm, 1, i--);
-                animation.setColorFilter(new ColorMatrixColorFilter(cm));
+                containerView.removeAllViews();
+                containerView.addView(menu);
+                panelArrow.setVisibility(View.GONE);
             }
         });
-        findViewById(R.id.btSepia).setOnClickListener(new View.OnClickListener() {
+        containerView = (LinearLayout) findViewById(R.id.bottomMenuContainer);
+        menu = getLayoutInflater().inflate(R.layout.filter_menu, null, false);
+        containerView.addView(menu);
+        menu.findViewById(R.id.brMenu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setContrastBrightness(cm, 1, i++);
-                animation.setColorFilter(new ColorMatrixColorFilter(cm));
+                final View contrast = getLayoutInflater().inflate(R.layout.filter_contrast, null, false);
+                containerView.removeAllViews();
+                containerView.addView(contrast);
+
+                seekBr = (SeekBar) findViewById(R.id.seekBr);
+                seekCo = (SeekBar) findViewById(R.id.seekCon);
+
+                seekBr.setMax(100);
+                seekCo.setMax(200);
+                seekBr.setProgress(50);
+                seekCo.setProgress(100);
+
+                seekBr.setOnSeekBarChangeListener(GifPreviewActivity.this);
+                seekCo.setOnSeekBarChangeListener(GifPreviewActivity.this);
+                panelArrow.setVisibility(View.VISIBLE);
             }
         });
-        findViewById(R.id.btSave).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = FileExplorerHelper.getFolderPickerIntent(GifPreviewActivity.this);
-                startActivityForResult(intent, requestCode);
-            }
-        });
+
         imageView.setImageDrawable(animation);
         animation.start();
     }
 
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        setContrastBrightness(cm, seekCo.getProgress() / 100f, seekBr.getProgress() - 50);
+        animation.setColorFilter(new ColorMatrixColorFilter(cm));
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
+    }
+
+    private class GifSaveTask extends AsyncTask<String, Void, Void> {
+        private ProgressDialog dialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = ProgressDialog.show(GifPreviewActivity.this, "Making gif",
+                    "Please, wait", true, false);
+        }
+
+        @Override
+        protected Void doInBackground(String[] params) {
+            try {
+                savePicturesWithEffects(params[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            dialog.dismiss();
+            Toast.makeText(GifPreviewActivity.this, "Animation was created", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void savePicturesWithEffects(String pathToSave) throws Exception {
-        File fileDir = new File(directoryAfter);
-        boolean isMkDir = fileDir.mkdir();
+        FileOutputStream fos = new FileOutputStream(pathToSave);
+        GifEncoder encoder = new GifEncoder();
+        encoder.start(fos);
+
         for (int i = 0; i < animation.getNumberOfFrames(); i++) {
             Drawable d = animation.getFrame(i);
             Bitmap bmp = ((BitmapDrawable) d).getBitmap();
@@ -105,17 +167,10 @@ public class GifPreviewActivity extends AppCompatActivity {
             Canvas canvas = new Canvas(resultBitmap);
             canvas.drawBitmap(resultBitmap, 0, 0, p);
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            resultBitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-
-            byte[] rawImage = stream.toByteArray();
-            try {
-                FileUtils.writeByteArrayToFile(new File(directoryAfter + "/" + i + ".jpg"),
-                        rawImage);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            resultBitmap.compress(Bitmap.CompressFormat.JPEG, 1, stream);
+            encoder.addFrame(resultBitmap);
         }
-        makeGif(pathToSave);
+        encoder.finish();
     }
 
     private void loadGif() {
@@ -164,7 +219,8 @@ public class GifPreviewActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_download:
-
+                Intent intent = FileExplorerHelper.getFolderPickerIntent(GifPreviewActivity.this);
+                startActivityForResult(intent, requestCode);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -198,7 +254,8 @@ public class GifPreviewActivity extends AppCompatActivity {
                         @Override
                         public void pick(String folder) {
                             try {
-                                savePicturesWithEffects(folder + "/" + filename + ".gif");
+                                //savePicturesWithEffects(folder + "/" + filename + ".gif");
+                                new GifSaveTask().execute(folder + "/" + filename + ".gif");
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

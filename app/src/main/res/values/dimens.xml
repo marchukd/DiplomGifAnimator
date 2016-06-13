@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="buttons_textsize">20sp</dimen>
     <dimen name="button_start_size">100dp</dimen>
+    <dimen name="bottomArrow">20dp</dimen>
+    <dimen name="bottomMenuSize">100dp</dimen>
 </resources>

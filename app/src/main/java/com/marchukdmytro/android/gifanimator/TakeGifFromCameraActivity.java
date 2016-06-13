@@ -2,7 +2,7 @@ package com.marchukdmytro.android.gifanimator;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
@@ -10,10 +10,8 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -26,15 +24,15 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class TakeGifFromCameraActivity extends AppCompatActivity implements Camera.PreviewCallback {
 
-    SurfaceView surfaceView;
-    Camera camera;
-    private int i = 0;
+    private final int maxFrames = 5;
+    private SurfaceView surfaceView;
+    private Camera camera;
+    private int currentFrameIndex = 0;
     private File fileToSave;
     private ArrayList<String> paths = new ArrayList<>();
     private ArrayList<Bitmap> bitmaps = new ArrayList<>();
@@ -44,7 +42,7 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
     private ImageButton btSwitch;
     private SurfaceHolder holder;
     private int currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
-    private String folderToSave = Environment.getExternalStorageDirectory().getPath()
+    private String folderToSaveFrames = Environment.getExternalStorageDirectory().getPath()
             + "/animation";
 
     @Override
@@ -58,12 +56,11 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
         findViewById(R.id.btStart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fileToSave = new File(folderToSave);
+                fileToSave = new File(folderToSaveFrames);
                 fileToSave.mkdir();
-                i = 0;
+                currentFrameIndex = 0;
                 paths.clear();
                 bitmaps.clear();
-                //takeScreenshot(fileToSave + "/111.jpg");
                 camera.setPreviewCallback(TakeGifFromCameraActivity.this);
             }
         });
@@ -171,15 +168,15 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
 
     @Override
     public void onPreviewFrame(final byte[] data, final Camera camera) {
-        if (i >= 15) {
+        if (currentFrameIndex >= maxFrames) {
             camera.setPreviewCallback(null);
-            //encodeGIF();
-            new GifCreatorTask().execute();
+            Intent intent = GifPreviewActivity.newInstance(this, folderToSaveFrames);
+            startActivity(intent);
             return;
         }
-        tvTookPhotos.setText(String.valueOf(i + 1));
-        takeImage(data, i);
-        i++;
+        tvTookPhotos.setText(String.valueOf(currentFrameIndex + 1));
+        takeImage(data, currentFrameIndex);
+        currentFrameIndex++;
     }
 
     private void takeImage(byte[] data, int i) {
@@ -227,6 +224,7 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
 
         paths.add(file.getPath());
     }
+
     public static Bitmap rotate(Bitmap bitmap, int degree) {
         int w = bitmap.getWidth();
         int h = bitmap.getHeight();
@@ -235,34 +233,5 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
         mtx.preScale(-1, 1);
         mtx.postRotate(degree);
         return Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
-    }
-
-    public class GifCreatorTask extends AsyncTask<Context, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            destinationPath = Environment.getExternalStorageDirectory().getPath()
-                    + "/" + "2.gif";
-            dialog = ProgressDialog.show(TakeGifFromCameraActivity.this, "loading",
-                    "loading", true, false);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            dialog.dismiss();
-            startActivity(GifPreviewActivity.newInstance(TakeGifFromCameraActivity.this, folderToSave));
-        }
-
-        @Override
-        protected Void doInBackground(Context... params) {
-            try {
-                //encodeGIF();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
     }
 }
