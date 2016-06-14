@@ -1,7 +1,6 @@
 package com.marchukdmytro.android.gifanimator;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,13 +9,14 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
+import android.media.Image;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -25,7 +25,6 @@ import org.apache.commons.io.FileUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class TakeGifFromCameraActivity extends AppCompatActivity implements Camera.PreviewCallback {
 
@@ -34,12 +33,11 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
     private Camera camera;
     private int currentFrameIndex = 0;
     private File fileToSave;
-    private ArrayList<String> paths = new ArrayList<>();
-    private ArrayList<Bitmap> bitmaps = new ArrayList<>();
     private TextView tvTookPhotos;
     private ImageButton btSwitch;
     private SurfaceHolder holder;
     private int currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+    private ImageButton btStart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +47,15 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         tvTookPhotos = (TextView) findViewById(R.id.tvTookPhotos);
 
-        findViewById(R.id.btStart).setOnClickListener(new View.OnClickListener() {
+        btStart = (ImageButton) findViewById(R.id.btStart);
+        btStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fileToSave = new File(Constants.TEMPORARY_FOLDER_PATH);
                 fileToSave.mkdir();
                 currentFrameIndex = 0;
-                paths.clear();
-                bitmaps.clear();
+                btStart.setEnabled(false);
+                btSwitch.setEnabled(false);
                 camera.setPreviewCallback(TakeGifFromCameraActivity.this);
             }
         });
@@ -166,6 +165,10 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
     public void onPreviewFrame(final byte[] data, final Camera camera) {
         if (currentFrameIndex >= maxFrames) {
             camera.setPreviewCallback(null);
+            currentFrameIndex = 0;
+            tvTookPhotos.setText("");
+            btStart.setEnabled(true);
+            btSwitch.setEnabled(true);
             Intent intent = GifPreviewActivity.newInstance(this, Constants.TEMPORARY_FOLDER_PATH);
             startActivity(intent);
             return;
@@ -209,7 +212,6 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
             bmp.compress(Bitmap.CompressFormat.JPEG, 90, stream);
             rawImage = stream.toByteArray();
         }
-        // Do something we this byte array
 
         File file = new File(fileToSave + "/" + i + "out.jpg");
         try {
@@ -217,8 +219,6 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        paths.add(file.getPath());
     }
 
     public static Bitmap rotate(Bitmap bitmap, int degree) {

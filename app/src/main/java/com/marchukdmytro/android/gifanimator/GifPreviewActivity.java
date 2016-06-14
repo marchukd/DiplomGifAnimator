@@ -82,6 +82,9 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
                     seekBr = (SeekBar) findViewById(R.id.seekBr);
                     seekCo = (SeekBar) findViewById(R.id.seekCon);
 
+                    seekBr.setProgress(brightnessProgress);
+                    seekCo.setProgress(contrastProgress);
+
                     seekBr.setOnSeekBarChangeListener(GifPreviewActivity.this);
                     seekCo.setOnSeekBarChangeListener(GifPreviewActivity.this);
                     break;
@@ -98,6 +101,8 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
             }
         }
     };
+    private int brightnessProgress = 50;
+    private int contrastProgress = 100;
 
     public static Intent newInstance(Context context, String framesPath) {
         Intent intent = new Intent(context, GifPreviewActivity.class);
@@ -148,7 +153,9 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        setContrastBrightness(seekCo.getProgress() / 100f, seekBr.getProgress() - 50);
+        brightnessProgress = seekBr.getProgress();
+        contrastProgress = seekCo.getProgress();
+        setContrastBrightness(contrastProgress / 100f, brightnessProgress - 50);
     }
 
     @Override

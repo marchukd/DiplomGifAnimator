@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/brightnessContrast"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bottomMenuPrimaryColor"
+    android:orientation="horizontal"
+    android:padding="@dimen/bottomMenuPadding">
+
+    <SeekBar
+        android:max="1000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/seekBar" />
+</LinearLayout>
