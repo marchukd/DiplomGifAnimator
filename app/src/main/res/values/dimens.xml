@@ -5,5 +5,10 @@
     <dimen name="buttons_textsize">20sp</dimen>
     <dimen name="button_start_size">100dp</dimen>
     <dimen name="bottomArrow">20dp</dimen>
+    <dimen name="bottomMenuSizeItem">50dp</dimen>
     <dimen name="bottomMenuSize">100dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="app_bar_height">400dp</dimen>
+    <dimen name="bottomMenuPadding">5dp</dimen>
+    <dimen name="effect_icon_size">72dp</dimen>
 </resources>

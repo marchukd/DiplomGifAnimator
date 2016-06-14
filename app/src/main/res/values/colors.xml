@@ -2,6 +2,8 @@
 <resources>
     <color name="colorPrimary">#4caf50</color>
     <color name="colorPrimaryDark">#2e7d32</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#21ae28</color>
     <color name="mainTextColor">#fff</color>
+    <color name="bottomMenuSecondaryColor">#fff</color>
+    <color name="bottomMenuPrimaryColor">#000</color>
 </resources>

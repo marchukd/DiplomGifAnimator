@@ -5,17 +5,31 @@
     android:layout_height="match_parent"
     android:orientation="horizontal">
 
-    <ImageButton
-        android:id="@+id/brMenu"
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_width="@dimen/bottomMenuSize"
-        android:layout_height="@dimen/bottomMenuSize"
-        android:background="@drawable/ic_brightness" />
+        android:layout_weight="1"
+        android:gravity="center">
 
-    <ImageButton
+        <ImageButton
+            android:id="@+id/brMenu"
+            android:layout_width="@dimen/bottomMenuSizeItem"
+            android:layout_height="@dimen/bottomMenuSizeItem"
+            android:background="@drawable/ic_brightness" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:id="@+id/efMenu"
-        android:layout_width="@dimen/bottomMenuSize"
-        android:layout_height="@dimen/bottomMenuSize"
-        android:background="@drawable/ic_brush" />
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/efMenu"
+            android:layout_width="@dimen/bottomMenuSizeItem"
+            android:layout_height="@dimen/bottomMenuSizeItem"
+            android:background="@drawable/ic_brush" />
+    </LinearLayout>
 </LinearLayout>

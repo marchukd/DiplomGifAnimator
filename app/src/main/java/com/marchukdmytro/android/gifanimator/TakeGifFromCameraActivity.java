@@ -36,14 +36,10 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
     private File fileToSave;
     private ArrayList<String> paths = new ArrayList<>();
     private ArrayList<Bitmap> bitmaps = new ArrayList<>();
-    private ProgressDialog dialog;
-    private String destinationPath;
     private TextView tvTookPhotos;
     private ImageButton btSwitch;
     private SurfaceHolder holder;
     private int currentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
-    private String folderToSaveFrames = Environment.getExternalStorageDirectory().getPath()
-            + "/animation";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +52,7 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
         findViewById(R.id.btStart).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fileToSave = new File(folderToSaveFrames);
+                fileToSave = new File(Constants.TEMPORARY_FOLDER_PATH);
                 fileToSave.mkdir();
                 currentFrameIndex = 0;
                 paths.clear();
@@ -170,7 +166,7 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
     public void onPreviewFrame(final byte[] data, final Camera camera) {
         if (currentFrameIndex >= maxFrames) {
             camera.setPreviewCallback(null);
-            Intent intent = GifPreviewActivity.newInstance(this, folderToSaveFrames);
+            Intent intent = GifPreviewActivity.newInstance(this, Constants.TEMPORARY_FOLDER_PATH);
             startActivity(intent);
             return;
         }

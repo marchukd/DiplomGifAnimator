@@ -15,6 +15,8 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <LinearLayout
+        android:background="@color/bottomMenuPrimaryColor"
+        android:id="@+id/previewContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -30,19 +32,10 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottomMenuSize"
             android:layout_gravity="bottom"
+            android:background="@color/bottomMenuPrimaryColor"
             android:orientation="vertical" />
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/panelArrow"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottomArrow">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="@drawable/ic_expand" />
-        </RelativeLayout>
+        <include
+            layout="@layout/expand_panel" />
     </LinearLayout>
 </LinearLayout>

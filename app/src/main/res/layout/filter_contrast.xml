@@ -2,10 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/brightnessContrast"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bottomMenuPrimaryColor"
+    android:padding="@dimen/bottomMenuPadding"
     android:orientation="vertical">
 
     <TextView
+        android:textColor="@color/bottomMenuSecondaryColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Brightness" />
@@ -13,9 +16,11 @@
     <SeekBar
         android:id="@+id/seekBr"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:progress="50" />
 
     <TextView
+        android:textColor="@color/bottomMenuSecondaryColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Contrast" />
@@ -23,5 +28,7 @@
     <SeekBar
         android:id="@+id/seekCon"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:max="200"
+        android:progress="100" />
 </LinearLayout>
