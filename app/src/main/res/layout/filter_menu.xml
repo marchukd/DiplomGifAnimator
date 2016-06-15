@@ -32,4 +32,17 @@
             android:layout_height="@dimen/bottomMenuSizeItem"
             android:background="@drawable/ic_brush" />
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/speedMenu"
+            android:layout_width="@dimen/bottomMenuSizeItem"
+            android:layout_height="@dimen/bottomMenuSizeItem"
+            android:background="@drawable/ic_speed" />
+    </LinearLayout>
 </LinearLayout>

@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.marchukdmytro.android.gifanimator.filepicker.EnterStringDialog;
@@ -66,7 +67,9 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
                     effectColorMatrix = getGrayScaleMatrix();
                     break;
             }
-            updateAnimation();
+            updateAnimationEffects();
+            imageView.setImageDrawable(animation);
+            animation.start();
         }
     };
     private View.OnClickListener menuClickListener = new View.OnClickListener() {
@@ -75,6 +78,7 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
             switch (v.getId()) {
                 case R.id.brMenu:
                     final View contrast = getLayoutInflater().inflate(R.layout.filter_contrast, null, false);
+                    contrast.setLayoutParams(paramsMatchParent);
                     bottomContainer.removeAllViews();
                     bottomContainer.addView(contrast);
                     panelArrow.setVisibility(View.VISIBLE);
@@ -90,6 +94,7 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
                     break;
                 case R.id.efMenu:
                     final View effects = getLayoutInflater().inflate(R.layout.filter_effects, null, false);
+                    effects.setLayoutParams(paramsMatchParent);
                     bottomContainer.removeAllViews();
                     bottomContainer.addView(effects);
                     panelArrow.setVisibility(View.VISIBLE);
@@ -98,11 +103,28 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
                     effects.findViewById(R.id.btEffectSepia).setOnClickListener(filterListener);
                     effects.findViewById(R.id.btEffectGrayScale).setOnClickListener(filterListener);
                     break;
+                case R.id.speedMenu:
+                    final View speedView = getLayoutInflater().inflate(R.layout.filter_speed, null, false);
+                    speedView.setLayoutParams(paramsMatchParent);
+                    bottomContainer.removeAllViews();
+                    bottomContainer.addView(speedView);
+                    panelArrow.setVisibility(View.VISIBLE);
+                    tvPlayingSpeed = (TextView) speedView.findViewById(R.id.tvPlayingSpeed);
+
+                    SeekBar seekSpeed = (SeekBar) speedView.findViewById(R.id.seekSpeed);
+                    seekSpeed.setOnSeekBarChangeListener(GifPreviewActivity.this);
+                    seekSpeed.setProgress(playingSpeed);
+                    break;
             }
         }
     };
     private int brightnessProgress = 50;
     private int contrastProgress = 100;
+    private int playingSpeed = 100;
+    private ImageView imageView;
+    private LinearLayout.LayoutParams paramsMatchParent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT);
+    private TextView tvPlayingSpeed;
 
     public static Intent newInstance(Context context, String framesPath) {
         Intent intent = new Intent(context, GifPreviewActivity.class);
@@ -117,15 +139,13 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         framesPath = getIntent().getStringExtra(TAG);
-        ImageView imageView = (ImageView) findViewById(R.id.gifView);
 
         loadAnimation();
 
         bottomContainer = (LinearLayout) findViewById(R.id.bottomMenuContainer);
 
         menu = getLayoutInflater().inflate(R.layout.filter_menu, null, false);
-        menu.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
+        menu.setLayoutParams(paramsMatchParent);
         panelArrow = findViewById(R.id.panelArrow);
         panelArrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,14 +158,16 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
         bottomContainer.addView(menu);
         menu.findViewById(R.id.brMenu).setOnClickListener(menuClickListener);
         menu.findViewById(R.id.efMenu).setOnClickListener(menuClickListener);
+        menu.findViewById(R.id.speedMenu).setOnClickListener(menuClickListener);
 
-        imageView.setImageDrawable(animation);
         animation.start();
     }
 
     private void loadAnimation() {
         try {
-            animation = getAnimationFromFolder(framesPath);
+            imageView = (ImageView) findViewById(R.id.gifView);
+            animation = getAnimationFromFolder(framesPath, playingSpeed);
+            imageView.setImageDrawable(animation);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -153,9 +175,24 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        brightnessProgress = seekBr.getProgress();
-        contrastProgress = seekCo.getProgress();
-        setContrastBrightness(contrastProgress / 100f, brightnessProgress - 50);
+        switch (seekBar.getId()) {
+            case R.id.seekBr:
+            case R.id.seekCon:
+                brightnessProgress = seekBr.getProgress();
+                contrastProgress = seekCo.getProgress();
+                setContrastBrightness(contrastProgress / 100f, brightnessProgress - 50);
+                imageView.setImageDrawable(animation);
+                animation.start();
+                break;
+            case R.id.seekSpeed:
+                tvPlayingSpeed.setText(getString(R.string.seek_playing_speed)
+                        + String.valueOf(playingSpeed));
+                playingSpeed = progress;
+                updateAnimationEffects();
+                imageView.setImageDrawable(animation);
+                animation.start();
+                break;
+        }
     }
 
     @Override
@@ -200,6 +237,7 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
         FileOutputStream outputStream = new FileOutputStream(pathToSave);
         GifEncoder encoder = new GifEncoder();
         encoder.start(outputStream);
+        encoder.setDelay(playingSpeed);
         ColorMatrix resultColorMatrix = new ColorMatrix();
         resultColorMatrix.setConcat(brightnessContrastColorMatrix, effectColorMatrix);
 
@@ -220,12 +258,12 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
         encoder.finish();
     }
 
-    private AnimationDrawable getAnimationFromFolder(String framesPath) throws Exception {
+    private AnimationDrawable getAnimationFromFolder(String framesPath, int duration) throws Exception {
         File[] files = new File(framesPath).listFiles();
         AnimationDrawable animation = new AnimationDrawable();
         for (int i = 0; i < files.length; i++) {
             BitmapDrawable oneFrame = new BitmapDrawable(files[i].getAbsolutePath());
-            animation.addFrame(oneFrame, 100);
+            animation.addFrame(oneFrame, duration);
         }
         animation.setOneShot(false);
         return animation;
@@ -237,10 +275,17 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
                 0, contrast, 0, 0, brightness,
                 0, 0, contrast, 0, brightness,
                 0, 0, 0, 1, 0});
-        updateAnimation();
+        updateAnimationEffects();
     }
 
-    private void updateAnimation() {
+    private void updateAnimationEffects() {
+        AnimationDrawable updatedAnimation = new AnimationDrawable();
+        for (int i = 0; i < animation.getNumberOfFrames(); i++) {
+            updatedAnimation.addFrame(animation.getFrame(i), playingSpeed);
+        }
+        updatedAnimation.setOneShot(false);
+        animation = updatedAnimation;
+
         ColorMatrix updatedMatrix = new ColorMatrix();
         updatedMatrix.setConcat(effectColorMatrix, brightnessContrastColorMatrix);
         animation.setColorFilter(new ColorMatrixColorFilter(updatedMatrix));

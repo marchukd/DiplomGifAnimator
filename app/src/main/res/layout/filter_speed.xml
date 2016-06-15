@@ -4,12 +4,28 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/bottomMenuPrimaryColor"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="@dimen/bottomMenuPadding">
 
-    <SeekBar
-        android:max="1000"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/seekBar" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvPlayingSpeed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/seek_playing_speed"
+            android:textColor="@color/bottomMenuSecondaryColor" />
+
+        <SeekBar
+            android:id="@+id/seekSpeed"
+            style="@style/SeekBarAppTheme"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:max="100" />
+    </LinearLayout>
 </LinearLayout>

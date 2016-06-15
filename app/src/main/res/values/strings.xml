@@ -11,4 +11,7 @@
         Незбереженні дані буде втрачено"</string>
     <string name="alertAnimationCreating">Створення анімації</string>
     <string name="alertAnimCreating">Анімація створюється...Зачекайте</string>
+    <string name="seek_contrast">"Контраст   "</string>
+    <string name="seek_bright">Яскравість</string>
+    <string name="seek_playing_speed">Швидкість відтворення (мс):</string>
 </resources>
