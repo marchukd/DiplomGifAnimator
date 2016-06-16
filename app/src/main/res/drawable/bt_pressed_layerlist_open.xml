@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/bt_pressed_open" />
+    <item
+        android:width="@dimen/circle_icon_size"
+        android:height="@dimen/circle_icon_size"
+
+        android:bottom="@dimen/main_padding_icon"
+        android:drawable="@drawable/ic_main_open"
+        android:gravity="center"
+        android:left="@dimen/main_padding_icon"
+
+        android:right="@dimen/main_padding_icon"
+        android:top="@dimen/main_padding_icon" />
+</layer-list>

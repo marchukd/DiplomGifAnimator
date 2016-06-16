@@ -16,4 +16,5 @@
     <string name="seek_playing_speed">Затримка між кадрами (мс):</string>
     <string name="gallery_main_title">Галерея</string>
     <string name="viewer_title">Відкрити</string>
+    <string name="settings_title">Налашту\nвання</string>
 </resources>

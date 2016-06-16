@@ -24,8 +24,6 @@ public class MainActivity extends AppCompatActivity
         findViewById(R.id.bt_new).setOnClickListener(this);
         findViewById(R.id.bt_gallery).setOnClickListener(this);
         findViewById(R.id.bt_viewer).setOnClickListener(this);
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(myToolbar);
 
     }
 
