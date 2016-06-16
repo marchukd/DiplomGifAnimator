@@ -8,4 +8,6 @@ import android.os.Environment;
 public class Constants {
     public static final String TEMPORARY_FOLDER_PATH = Environment.getExternalStorageDirectory().getPath()
             + "/animation";
+    public static final String GALLERY_FOLDER = Environment.getExternalStorageDirectory().getPath()
+            + "/gif-animator-gallery";
 }

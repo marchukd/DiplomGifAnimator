@@ -10,8 +10,10 @@
     <string name="question_backdialog">"Ви дійсно хочете повернутись на попередній екран?
         Незбереженні дані буде втрачено"</string>
     <string name="alertAnimationCreating">Створення анімації</string>
-    <string name="alertAnimCreating">Анімація створюється...Зачекайте</string>
+    <string name="alertAnimCreating">Анімація створюється…Зачекайте</string>
     <string name="seek_contrast">"Контраст   "</string>
     <string name="seek_bright">Яскравість</string>
-    <string name="seek_playing_speed">Швидкість відтворення (мс):</string>
+    <string name="seek_playing_speed">Затримка між кадрами (мс):</string>
+    <string name="gallery_main_title">Галерея</string>
+    <string name="viewer_title">Відкрити</string>
 </resources>

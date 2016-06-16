@@ -61,7 +61,7 @@ public class GifEncoder {
      * @param ms int delay time in milliseconds
      */
     public void setDelay(int ms) {
-        delay = ms / 10;
+        delay = ms;
     }
 
     /**

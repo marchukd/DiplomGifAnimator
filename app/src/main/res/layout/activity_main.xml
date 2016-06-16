@@ -12,14 +12,14 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:elevation="4dp"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-    <RelativeLayout
-        android:layout_below="@id/my_toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/my_toolbar"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
@@ -34,5 +34,25 @@
             android:text="@string/button_camera_text"
             android:textColor="@color/mainTextColor"
             android:textSize="@dimen/buttons_textsize" />
-    </RelativeLayout>
+
+        <Button
+            android:id="@+id/bt_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bt_new_selector"
+            android:gravity="center"
+            android:text="@string/gallery_main_title"
+            android:textColor="@color/mainTextColor"
+            android:textSize="@dimen/buttons_textsize" />
+
+        <Button
+            android:id="@+id/bt_viewer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bt_new_selector"
+            android:gravity="center"
+            android:text="@string/viewer_title"
+            android:textColor="@color/mainTextColor"
+            android:textSize="@dimen/buttons_textsize" />
+    </LinearLayout>
 </RelativeLayout>

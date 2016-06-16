@@ -2,9 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="Download"
-        android:orderInCategory="10"
         android:id="@+id/action_download"
         android:icon="@drawable/ic_file_download"
+        android:orderInCategory="10"
+        android:title="Download"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_save_in_gallery"
+        android:icon="@drawable/ic_file_download"
+        android:orderInCategory="10"
+        android:title="Save in gallery"
         app:showAsAction="ifRoom" />
 </menu>

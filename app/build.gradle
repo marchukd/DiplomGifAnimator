@@ -27,4 +27,7 @@ dependencies {
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.16'
     compile 'commons-io:commons-io:2.5'
     compile 'com.nononsenseapps:filepicker:2.5.0'
+    compile 'com.android.support:cardview-v7:23.0.+'
+    compile 'com.android.support:recyclerview-v7:23.0.+'
+    compile 'com.android.support:design:23.2.0'
 }

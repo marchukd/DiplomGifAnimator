@@ -15,6 +15,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
@@ -118,13 +121,50 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
             }
         }
     };
+    private View.OnClickListener fabListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.fab:
+                    animateFAB();
+                    break;
+                case R.id.fab1:
+                    fabSaveToGallery.startAnimation(fabClick1);
+                    new EnterStringDialog(GifPreviewActivity.this, new FilePickerCallback() {
+                        @Override
+                        public void pick(String path) {
+                            File galleryFolder = new File(Constants.GALLERY_FOLDER);
+                            if (!galleryFolder.exists())
+                                galleryFolder.mkdir();
+                            new GifSaveTask().execute(Constants.GALLERY_FOLDER + "/" + path + ".gif");
+                        }
+                    }).show();
+                    break;
+                case R.id.fab2:
+                    fabSaveCustom.startAnimation(fabClick2);
+                    Intent intent = FileExplorerHelper.getFolderPickerIntent(GifPreviewActivity.this);
+                    startActivityForResult(intent, requestCode);
+                    break;
+            }
+        }
+    };
+    private Boolean isFabOpen = false;
+    private Animation fab_open;
+    private Animation fab_close;
+    private Animation fabClick1;
+    private Animation fabClick2;
+    private Animation mainFabOpen;
+    private Animation mainFabClose;
+
     private int brightnessProgress = 50;
     private int contrastProgress = 100;
-    private int playingSpeed = 100;
+    private int playingSpeed = 0;
     private ImageView imageView;
     private LinearLayout.LayoutParams paramsMatchParent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT);
     private TextView tvPlayingSpeed;
+    private FloatingActionButton fab, fabSaveToGallery, fabSaveCustom;
+    private Animation fabClick;
 
     public static Intent newInstance(Context context, String framesPath) {
         Intent intent = new Intent(context, GifPreviewActivity.class);
@@ -139,6 +179,22 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         framesPath = getIntent().getStringExtra(TAG);
+
+        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        fabClick = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_item_click_open);
+        fabClick1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_item_click_open);
+        fabClick2 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_item_click_open);
+        mainFabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.main_fab_open);
+        mainFabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.main_fab_close);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fabSaveToGallery = (FloatingActionButton) findViewById(R.id.fab1);
+        fabSaveCustom = (FloatingActionButton) findViewById(R.id.fab2);
+        fab.setOnClickListener(fabListener);
+        fabSaveToGallery.setOnClickListener(fabListener);
+        fabSaveCustom.setOnClickListener(fabListener);
+        fab.startAnimation(fabClick);
 
         loadAnimation();
 
@@ -166,10 +222,31 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
     private void loadAnimation() {
         try {
             imageView = (ImageView) findViewById(R.id.gifView);
-            animation = getAnimationFromFolder(framesPath, playingSpeed);
+            animation = getAnimationFromFolder(framesPath, playingSpeed * 100);
             imageView.setImageDrawable(animation);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void animateFAB() {
+
+        if (isFabOpen) {
+            fab.startAnimation(mainFabClose);
+            fabSaveToGallery.startAnimation(fab_close);
+            fabSaveCustom.startAnimation(fab_close);
+            fabSaveToGallery.setClickable(false);
+            fabSaveCustom.setClickable(false);
+            isFabOpen = false;
+
+        } else {
+            fab.startAnimation(mainFabOpen);
+            fabSaveToGallery.startAnimation(fab_open);
+            fabSaveCustom.startAnimation(fab_open);
+            fabSaveToGallery.setClickable(true);
+            fabSaveCustom.setClickable(true);
+            isFabOpen = true;
+
         }
     }
 
@@ -185,9 +262,9 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
                 animation.start();
                 break;
             case R.id.seekSpeed:
+                playingSpeed = seekBar.getProgress() + 1;
                 tvPlayingSpeed.setText(getString(R.string.seek_playing_speed)
-                        + String.valueOf(playingSpeed));
-                playingSpeed = progress;
+                        + String.valueOf(playingSpeed * 100));
                 updateAnimationEffects();
                 imageView.setImageDrawable(animation);
                 animation.start();
@@ -281,7 +358,7 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
     private void updateAnimationEffects() {
         AnimationDrawable updatedAnimation = new AnimationDrawable();
         for (int i = 0; i < animation.getNumberOfFrames(); i++) {
-            updatedAnimation.addFrame(animation.getFrame(i), playingSpeed);
+            updatedAnimation.addFrame(animation.getFrame(i), playingSpeed * 100);
         }
         updatedAnimation.setOneShot(false);
         animation = updatedAnimation;
@@ -304,6 +381,17 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
                 Intent intent = FileExplorerHelper.getFolderPickerIntent(GifPreviewActivity.this);
                 startActivityForResult(intent, requestCode);
                 break;
+            case R.id.action_save_in_gallery:
+                new EnterStringDialog(this, new FilePickerCallback() {
+                    @Override
+                    public void pick(String path) {
+                        File galleryFolder = new File(Constants.GALLERY_FOLDER);
+                        if (!galleryFolder.exists())
+                            galleryFolder.mkdir();
+                        new GifSaveTask().execute(Constants.GALLERY_FOLDER + "/" + path + ".gif");
+                    }
+                }).show();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -319,7 +407,7 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
         matrix.setSaturation(0);
 
         ColorMatrix colorScale = new ColorMatrix();
-        colorScale.setScale(1, 1, 0.6f, 1);
+        colorScale.setScale(1, 1, 0.8f, 1);
 
         matrix.postConcat(colorScale);
 

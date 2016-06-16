@@ -12,4 +12,5 @@
     <dimen name="bottomMenuPadding">5dp</dimen>
     <dimen name="effect_icon_size">72dp</dimen>
     <dimen name="switchButtonSize">50dp</dimen>
+    <dimen name="cardItemHeight">200dp</dimen>
 </resources>
