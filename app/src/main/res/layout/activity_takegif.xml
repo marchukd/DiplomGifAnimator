@@ -28,8 +28,7 @@
             android:layout_width="@dimen/button_start_size"
             android:layout_height="@dimen/button_start_size"
             android:layout_centerInParent="true"
-            android:background="@drawable/ic_camera"
-            android:text="@string/start_record" />
+            android:background="@drawable/ic_camera" />
     </RelativeLayout>
 
     <ImageButton

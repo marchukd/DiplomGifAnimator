@@ -37,7 +37,7 @@
         android:layout_marginTop="75dp"
         android:src="@drawable/ic_fab_gallery"
         android:visibility="invisible"
-        app:backgroundTint="#adaddd"
+        app:backgroundTint="#4de20d"
         app:elevation="6dp"
         app:pressedTranslationZ="12dp" />
 
@@ -50,7 +50,7 @@
         android:layout_marginTop="20dp"
         android:src="@drawable/ic_fab_download"
         android:visibility="invisible"
-        app:backgroundTint="#aaeeaa"
+        app:backgroundTint="#edb80b"
         app:elevation="6dp"
         app:pressedTranslationZ="12dp" />
 

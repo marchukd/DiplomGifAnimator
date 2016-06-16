@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity
         findViewById(R.id.bt_new).setOnClickListener(this);
         findViewById(R.id.bt_gallery).setOnClickListener(this);
         findViewById(R.id.bt_viewer).setOnClickListener(this);
+        findViewById(R.id.bt_settings).setOnClickListener(this);
 
     }
 
@@ -48,6 +49,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.bt_viewer:
                 intent = FileExplorerHelper.getFilePickerIntent(MainActivity.this);
                 startActivityForResult(intent, requestCode);
+                break;
+            case R.id.bt_settings:
+                intent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
                 break;
         }
     }

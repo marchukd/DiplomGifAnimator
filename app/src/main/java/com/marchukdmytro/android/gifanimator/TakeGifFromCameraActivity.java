@@ -11,6 +11,7 @@ import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.media.Image;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
@@ -28,7 +29,7 @@ import java.io.IOException;
 
 public class TakeGifFromCameraActivity extends AppCompatActivity implements Camera.PreviewCallback {
 
-    private final int maxFrames = 5;
+    private int maxFrames;
     private SurfaceView surfaceView;
     private Camera camera;
     private int currentFrameIndex = 0;
@@ -43,6 +44,8 @@ public class TakeGifFromCameraActivity extends AppCompatActivity implements Came
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_takegif);
+        maxFrames = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this)
+                .getString(SettingsActivity.COUNT_OF_FRAMES, SettingsActivity.DEFAULT_COUNT_OF_FRAMES));
 
         surfaceView = (SurfaceView) findViewById(R.id.surfaceView);
         tvTookPhotos = (TextView) findViewById(R.id.tvTookPhotos);

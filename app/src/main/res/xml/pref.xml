@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:defaultValue="en_US"
+        android:entries="@array/languages"
+        android:entryValues="@array/languages_entry"
+        android:key="language_preference"
+        android:summary="%s"
+        android:title="@string/language_for_app" />
+    <EditTextPreference
+        android:defaultValue="5"
+        android:key="countOfFrames"
+        android:summary="%s"
+        android:title="@string/count_of_max_frames" />
+</PreferenceScreen>

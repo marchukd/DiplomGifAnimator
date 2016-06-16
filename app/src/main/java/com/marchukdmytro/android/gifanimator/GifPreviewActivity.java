@@ -18,9 +18,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -35,9 +32,12 @@ import com.marchukdmytro.android.gifanimator.filepicker.EnterStringDialog;
 import com.marchukdmytro.android.gifanimator.filepicker.FileExplorerHelper;
 import com.marchukdmytro.android.gifanimator.filepicker.FilePickerCallback;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 
 /**
@@ -158,7 +158,7 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
 
     private int brightnessProgress = 50;
     private int contrastProgress = 100;
-    private int playingSpeed = 0;
+    private int playingSpeed = 1;
     private ImageView imageView;
     private LinearLayout.LayoutParams paramsMatchParent = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
             ViewGroup.LayoutParams.MATCH_PARENT);
@@ -304,7 +304,8 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             dialog.dismiss();
-            Toast.makeText(GifPreviewActivity.this, "Animation was created", Toast.LENGTH_SHORT).show();
+            Toast.makeText(GifPreviewActivity.this, getString(R.string.animation_was_created),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -419,5 +420,15 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
         builder.setPositiveButton(getString(R.string.yes), listener);
         builder.setNegativeButton(getString(R.string.cancel), null);
         builder.show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            FileUtils.cleanDirectory(new File(Constants.TEMPORARY_FOLDER_PATH));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

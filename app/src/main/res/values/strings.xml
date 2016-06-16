@@ -1,20 +1,16 @@
 <resources>
     <string name="app_name">GifAnimator</string>
-    <string name="take_picture">Picture</string>
-    <string name="start_record">Start</string>
-    <string name="button_camera_text">Камера</string>
     <string name="alert_select_file_message">Введіть назву файлу</string>
-    <string name="ok">ok</string>
-    <string name="cancel">cancel</string>
-    <string name="yes">yes</string>
-    <string name="question_backdialog">"Ви дійсно хочете повернутись на попередній екран?
-        Незбереженні дані буде втрачено"</string>
+    <string name="ok">OK</string>
+    <string name="cancel">відміна</string>
+    <string name="yes">так</string>
+    <string name="question_backdialog">"Ви дійсно хочете повернутись на попередній екран? Незбереженні дані буде втрачено"</string>
     <string name="alertAnimationCreating">Створення анімації</string>
     <string name="alertAnimCreating">Анімація створюється…Зачекайте</string>
     <string name="seek_contrast">"Контраст   "</string>
     <string name="seek_bright">Яскравість</string>
     <string name="seek_playing_speed">Затримка між кадрами (мс):</string>
-    <string name="gallery_main_title">Галерея</string>
-    <string name="viewer_title">Відкрити</string>
-    <string name="settings_title">Налашту\nвання</string>
+    <string name="language_for_app">Мова додатку</string>
+    <string name="count_of_max_frames">Максимальна кількість кадрів</string>
+    <string name="animation_was_created">Animation was created</string>
 </resources>
