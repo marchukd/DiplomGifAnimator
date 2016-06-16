@@ -176,8 +176,6 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
-        setSupportActionBar(toolbar);
         framesPath = getIntent().getStringExtra(TAG);
 
         fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
@@ -372,34 +370,6 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
         ColorMatrix matrix = new ColorMatrix();
         matrix.setSaturation(0);
         return matrix;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_download:
-                Intent intent = FileExplorerHelper.getFolderPickerIntent(GifPreviewActivity.this);
-                startActivityForResult(intent, requestCode);
-                break;
-            case R.id.action_save_in_gallery:
-                new EnterStringDialog(this, new FilePickerCallback() {
-                    @Override
-                    public void pick(String path) {
-                        File galleryFolder = new File(Constants.GALLERY_FOLDER);
-                        if (!galleryFolder.exists())
-                            galleryFolder.mkdir();
-                        new GifSaveTask().execute(Constants.GALLERY_FOLDER + "/" + path + ".gif");
-                    }
-                }).show();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_preview, menu);
-        return super.onCreateOptionsMenu(menu);
     }
 
     private ColorMatrix getSepiaMatrix() {

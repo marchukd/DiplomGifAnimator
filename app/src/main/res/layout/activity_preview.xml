@@ -4,15 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/my_toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-        app:elevation="4dp"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
     <LinearLayout
         android:id="@+id/previewContent"
         android:layout_width="match_parent"
@@ -42,12 +33,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
-        android:layout_marginTop="75dp"
         android:layout_marginRight="20dp"
+        android:layout_marginTop="75dp"
+        android:src="@drawable/ic_gallery"
         android:visibility="invisible"
         app:backgroundTint="#adaddd"
         app:elevation="6dp"
-        android:src="@drawable/ic_gallery"
         app:pressedTranslationZ="12dp" />
 
     <android.support.design.widget.FloatingActionButton
@@ -55,8 +46,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
-        android:layout_marginTop="20dp"
         android:layout_marginRight="75dp"
+        android:layout_marginTop="20dp"
         android:src="@drawable/ic_file_download"
         android:visibility="invisible"
         app:backgroundTint="#aaeeaa"
@@ -68,9 +59,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:src="@drawable/ic_save"
         android:visibility="visible"
         app:backgroundTint="@color/colorAccent"
         app:elevation="6dp"
-        android:src="@drawable/ic_save"
         app:pressedTranslationZ="12dp" />
 </android.support.design.widget.CoordinatorLayout>
