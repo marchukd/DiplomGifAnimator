@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/splash"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/splash_margin_bottom"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/dot1"
+            android:visibility="invisible"
+            android:layout_width="@dimen/splash_button_size"
+            android:layout_height="@dimen/splash_button_size"
+            android:layout_margin="@dimen/splash_dots_margin"
+            android:background="@drawable/bt_normal_new" />
+
+        <ImageView
+            android:id="@+id/dot2"
+            android:visibility="invisible"
+            android:layout_width="@dimen/splash_button_size"
+            android:layout_height="@dimen/splash_button_size"
+            android:layout_margin="@dimen/splash_dots_margin"
+            android:background="@drawable/bt_normal_gallery" />
+
+        <ImageView
+            android:visibility="invisible"
+            android:id="@+id/dot3"
+            android:layout_width="@dimen/splash_button_size"
+            android:layout_height="@dimen/splash_button_size"
+            android:layout_margin="@dimen/splash_dots_margin"
+            android:background="@drawable/bt_normal_open" />
+
+        <ImageView
+            android:id="@+id/dot4"
+            android:visibility="invisible"
+            android:layout_width="@dimen/splash_button_size"
+            android:layout_height="@dimen/splash_button_size"
+            android:layout_margin="@dimen/splash_dots_margin"
+            android:background="@drawable/bt_normal_setting" />
+    </LinearLayout>
+</RelativeLayout>

@@ -293,7 +293,7 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
         @Override
         protected Void doInBackground(String[] params) {
             try {
-                savePicturesWithEffects(params[0]);
+                saveGifWithEffects(params[0]);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -309,7 +309,7 @@ public class GifPreviewActivity extends AppCompatActivity implements SeekBar.OnS
         }
     }
 
-    private void savePicturesWithEffects(String pathToSave) throws Exception {
+    private void saveGifWithEffects(String pathToSave) throws Exception {
         FileOutputStream outputStream = new FileOutputStream(pathToSave);
         GifEncoder encoder = new GifEncoder();
         encoder.start(outputStream);

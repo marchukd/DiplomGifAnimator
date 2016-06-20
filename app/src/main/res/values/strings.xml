@@ -1,16 +1,17 @@
 <resources>
-    <string name="app_name">GifAnimator</string>
-    <string name="alert_select_file_message">Введіть назву файлу</string>
+    <string name="app_name">GifAnim</string>
+    <string name="alert_select_file_message">Enter filename</string>
     <string name="ok">OK</string>
-    <string name="cancel">відміна</string>
-    <string name="yes">так</string>
-    <string name="question_backdialog">"Ви дійсно хочете повернутись на попередній екран? Незбереженні дані буде втрачено"</string>
-    <string name="alertAnimationCreating">Створення анімації</string>
-    <string name="alertAnimCreating">Анімація створюється…Зачекайте</string>
-    <string name="seek_contrast">"Контраст   "</string>
-    <string name="seek_bright">Яскравість</string>
-    <string name="seek_playing_speed">Затримка між кадрами (мс):</string>
-    <string name="language_for_app">Мова додатку</string>
-    <string name="count_of_max_frames">Максимальна кількість кадрів</string>
-    <string name="animation_was_created">Animation was created</string>
+    <string name="cancel">Cancel</string>
+    <string name="yes">Yes</string>
+    <string name="question_backdialog">"Do you really want come back? Unsaved data will be lose"</string>
+    <string name="alertAnimationCreating">Animation creating</string>
+    <string name="alertAnimCreating">Animation is creating now…Please wait</string>
+    <string name="seek_contrast">"Contrast   "</string>
+    <string name="seek_bright">Brightness</string>
+    <string name="seek_playing_speed">Frame delay (ms):</string>
+    <string name="language_for_app">App Language</string>
+    <string name="count_of_max_frames">Max frames</string>
+    <string name="animation_was_created">Animation was saved</string>
+    <string name="prefs_min_max">The value must be in the range from 2 to 100</string>
 </resources>

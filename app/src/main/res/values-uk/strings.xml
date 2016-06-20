@@ -1,0 +1,16 @@
+<resources>
+    <string name="alert_select_file_message">Введіть назву файлу</string>
+    <string name="ok">OK</string>
+    <string name="cancel">відміна</string>
+    <string name="yes">так</string>
+    <string name="question_backdialog">"Ви дійсно хочете повернутись на попередній екран? Незбереженні дані буде втрачено"</string>
+    <string name="alertAnimationCreating">Створення анімації</string>
+    <string name="alertAnimCreating">Анімація створюється…Зачекайте</string>
+    <string name="seek_contrast">"Контраст   "</string>
+    <string name="seek_bright">Яскравість</string>
+    <string name="seek_playing_speed">Затримка між кадрами (мс):</string>
+    <string name="language_for_app">Мова додатку</string>
+    <string name="count_of_max_frames">Максимальна кількість кадрів</string>
+    <string name="animation_was_created">Анімацію збережено</string>
+    <string name="prefs_min_max">Значення має бути в діапазоні від 2 до 100</string>
+</resources>

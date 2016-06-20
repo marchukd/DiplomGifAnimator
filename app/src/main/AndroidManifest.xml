@@ -14,13 +14,7 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity android:name=".TakeGifFromCameraActivity" />
         <activity android:name=".GifPreviewActivity" />
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".MainActivity"/>
         <activity
             android:name="com.nononsenseapps.filepicker.FilePickerActivity"
             android:label="@string/app_name"
@@ -35,6 +29,13 @@
         <activity android:name=".gallery.GalleryActivity" />
         <activity android:name=".view_pager.ViewPagerActivity" />
         <activity android:name=".SettingsActivity"/>
+        <activity android:name=".SplashScreenActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
