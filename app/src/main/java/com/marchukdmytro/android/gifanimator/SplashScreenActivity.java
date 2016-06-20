@@ -11,9 +11,6 @@ import java.util.List;
 
 public class SplashScreenActivity extends Activity {
 
-    private List<View> views = new ArrayList<>();
-    private int i;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

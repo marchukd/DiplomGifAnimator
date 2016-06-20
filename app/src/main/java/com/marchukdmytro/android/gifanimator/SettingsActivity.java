@@ -50,7 +50,7 @@ public class SettingsActivity extends PreferenceActivity
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         int value = Integer.parseInt(String.valueOf(newValue));
         if ((value <= 100) && (value >= 2))
-            return true;
+               return true;
         Toast.makeText(SettingsActivity.this, R.string.prefs_min_max, Toast.LENGTH_SHORT).show();
         return false;
     }
